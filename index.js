@@ -108,7 +108,10 @@ async function createSentryRelease({ pluginApi, release, sentryEnvironment, sour
 
   // https://docs.sentry.io/cli/releases/#sentry-cli-commit-integration
   if (!inputs.skipSetCommits) {
-    const repository = process.env.REPOSITORY_URL.split(/[:/]/).slice(-2).join('/')
+    const repositoryParts = process.env.REPOSITORY_URL.split(/[:/]/).slice(-2);
+
+    const repository = process.env.REPOSITORY_URL.includes('gitlab') ? repositoryParts.join(' / ') : repositoryParts.join('/');
+
     try {
       await cli.releases.setCommits(release, {
         repo: repository,
